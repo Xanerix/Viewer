@@ -1,0 +1,43 @@
+# 推 v* tag 时构建 Release，把安装版和便携版挂到同名 GitHub Release 上。
+# tag 必须与 installer/viewer.iss 的 AppVersion 一致：安装包文件名里带着它，对不上就找不到文件、直接失败。
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # CMake 的 installer 目标要 ISCC；runner 镜像不一定自带
+      - name: 安装 Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+              choco install innosetup -y --no-progress
+          }
+
+      # build.ps1 自己导入 vcvars64，cmake / ninja 随 VS 一起进 PATH
+      - name: 构建
+        shell: pwsh
+        run: ./build.ps1
+
+      - name: 打包并发布
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          $setup = "cmake-build-release/Viewer-$version-x64-setup.exe"
+          if (-not (Test-Path $setup)) { throw "找不到 $setup：tag 与 viewer.iss 的 AppVersion 不一致？" }
+          # 便携版就是那一个 exe：静态 CRT，没有别的依赖；viewer.toml 由设置对话框在 exe 旁边生成
+          $portable = "cmake-build-release/Viewer-$version-x64-portable.zip"
+          Compress-Archive -Path cmake-build-release/viewer.exe -DestinationPath $portable
+          gh release create $env:GITHUB_REF_NAME $setup $portable --title "Viewer $version" --generate-notes

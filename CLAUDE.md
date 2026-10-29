@@ -12,6 +12,7 @@ Viewer：Windows 原生轻量图片查看器，C++20 + Win32 + WIC，冷启动�
 - 其他 preset：`ninja-debug`（`cmake-build-debug/`）、`ninja-asan`（Debug + `/fsanitize=address`，自动剥掉互斥的 `/RTC1`）。Debug 用动态 CRT，所以不生成 `installer` 目标；Release 用静态 CRT 并开 `/GS /guard:cf`。
 - 编译选项是 `/W4`，构建后要检查有没有新增警告。
 - 唯一的第三方依赖是 `third_party/` 下 vendored 的 toml++ 单头文件（以 SYSTEM 方式引入）。
+- 发版：版本号有两处，`installer/viewer.iss` 的 `AppVersion` 和 `src/res/viewer.rc`，要一起改；然后推送 `v<AppVersion>` tag，`.github/workflows/release.yml` 会在 Windows runner 上跑 `build.ps1`，把安装版（`Viewer-<ver>-x64-setup.exe`）和便携版（`Viewer-<ver>-x64-portable.zip`）发布到同名 Release。
 
 ## 测试与验证
 
