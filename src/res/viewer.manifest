@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Per-Monitor V2（README §5 §11 P4）。不声明的话进程被判为 DPI unaware：
+  高缩放率的屏幕上系统会把整窗位图拉伸，一个看图器最不能忍的就是这个；
+  而且 GetDpiForWindow 会一律返回 96，边缘命中区与全屏留白全按 100% 算。
+
+  dpiAware 那条是给 Win10 1607 之前的系统兜底的，它不认 dpiAwareness。
+-->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows 10/11：GetDpiForWindow 与 GetSystemMetricsForDpi 要这条才认版本 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
+    </application>
+  </compatibility>
+  <!-- Common Controls v6：设置对话框与 MessageBox 用现代视觉样式，不然是经典灰按钮 -->
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0"
+                        processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>
+    </dependentAssembly>
+  </dependency>
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/pm</dpiAware>
+    </windowsSettings>
+  </application>
+</assembly>

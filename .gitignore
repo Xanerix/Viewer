@@ -1,0 +1,18 @@
+# 构建目录
+cmake-build-*/
+build/
+out/
+
+# IDE 与插件的本机配置
+.idea/
+.build/
+.vs/
+
+# Claude Code 本机设置
+.claude/settings.local.json
+
+# 手工测试样图
+.cache/
+
+# VIEWER_LOG 构建写出的诊断日志
+viewer.log

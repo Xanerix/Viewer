@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "ninja-debug",
+      "displayName": "Debug (Ninja · MSVC)",
+      "description": "日常开发。需要 Visual Studio 工具链提供 vcvars 环境。",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ninja-asan",
+      "displayName": "ASan (Ninja · MSVC)",
+      "description": "README §9.2 的调试常开 ASan：自动剥掉互斥的 /RTC1。",
+      "inherits": "ninja-debug",
+      "binaryDir": "${sourceDir}/cmake-build-asan",
+      "cacheVariables": {
+        "VIEWER_ASAN": "ON"
+      }
+    },
+    {
+      "name": "ninja-release",
+      "displayName": "Release (Ninja · MSVC)",
+      "description": "冷启动是第一指标（README §1），跑分只认这个配置。",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ninja-debug",
+      "configurePreset": "ninja-debug"
+    },
+    {
+      "name": "ninja-asan",
+      "configurePreset": "ninja-asan"
+    },
+    {
+      "name": "ninja-release",
+      "configurePreset": "ninja-release"
+    }
+  ]
+}

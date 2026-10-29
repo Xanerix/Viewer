@@ -1,0 +1,66 @@
+﻿// 版本信息资源（§11 P6 后续）。没有它，文件属性里没有版本号那一页，
+// 任务管理器的「描述」列也是空的。
+//
+// 版本号在本项目里有两处，改的时候一起改：这里的 FILEVERSION / PRODUCTVERSION
+// 与它们对应的字符串，以及 installer/viewer.iss 的 AppVersion。
+
+#include <winver.h>
+#include <winres.h>
+
+#include "resource.h"
+
+// Explorer 拿数字最小的那个资源 ID 当程序图标，所以这里钉死 1。
+// 含 16/32/48/256 四个尺寸，逐尺寸矢量重绘而非缩放，16x16 上才不糊。
+1 ICON "viewer.ico"
+
+// 无参数启动时的设置对话框（src/settings.cpp）。
+IDD_SETTINGS DIALOGEX 0, 0, 220, 120
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | DS_SETFOREGROUND | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Viewer 设置"
+FONT 9, "Microsoft YaHei UI", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "背景色", IDC_STATIC, 7, 7, 206, 32
+    EDITTEXT        IDC_BG_EDIT, 15, 19, 60, 14, ES_AUTOHSCROLL
+    LTEXT           "", IDC_BG_SWATCH, 81, 19, 24, 14, WS_BORDER
+    PUSHBUTTON      "选择…", IDC_BG_PICK, 111, 19, 50, 14
+
+    GROUPBOX        "初始窗口尺寸", IDC_STATIC, 7, 45, 206, 48
+    AUTOCHECKBOX    "自动（光标所在显示器的一半宽高）", IDC_SIZE_AUTO, 15, 57, 190, 10
+    EDITTEXT        IDC_WIDTH, 15, 72, 40, 14, ES_NUMBER
+    CTEXT           "×", IDC_STATIC, 57, 74, 10, 8
+    EDITTEXT        IDC_HEIGHT, 69, 72, 40, 14, ES_NUMBER
+    LTEXT           "像素", IDC_STATIC, 113, 74, 30, 8
+
+    DEFPUSHBUTTON   "确定", IDOK, 109, 99, 50, 14
+    PUSHBUTTON      "取消", IDCANCEL, 163, 99, 50, 14
+END
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        // 0804 = 简体中文，04B0 = 1200 = Unicode 代码页
+        BLOCK "080404B0"
+        BEGIN
+            VALUE "CompanyName",      "Xanerix"
+            VALUE "FileDescription",  "Viewer 图片查看器"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "viewer"
+            VALUE "LegalCopyright",   "Copyright (C) 2026 Xanerix"
+            VALUE "OriginalFilename", "viewer.exe"
+            VALUE "ProductName",      "Viewer"
+            VALUE "ProductVersion",   "1.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
